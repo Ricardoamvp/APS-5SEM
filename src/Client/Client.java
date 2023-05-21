@@ -3,27 +3,23 @@ package Client;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-
-public class FClient extends javax.swing.JFrame {
+public class Client extends javax.swing.JFrame {
 
     private Socket cliente;
 
-    /**
-     * Creates new form FClient
-     */
-    public FClient() {
+   // Construtor do client
+    public Client() {
         initComponents();
         initCliente();
     }
 
+    //conexao
     private void initCliente(){
         try {
             cliente = new Socket("127.0.0.1",3322);
         } catch (IOException ex) {
-            Logger.getLogger(FClient.class.getName()).log(Level.SEVERE, null, ex);
+            ex.getMessage();
         }
     }
 
@@ -85,7 +81,7 @@ public class FClient extends javax.swing.JFrame {
             saida.println(jTextArea1.getText());
             jTextArea1.setText("");
         } catch (IOException ex) {
-            Logger.getLogger(FClient.class.getName()).log(Level.SEVERE, null, ex);
+            ex.getMessage();
         }
     }
 
@@ -106,20 +102,20 @@ public class FClient extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FClient().setVisible(true);
+                new Client().setVisible(true);
             }
         });
     }
