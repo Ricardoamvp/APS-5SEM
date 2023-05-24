@@ -16,7 +16,7 @@ import java.io.Writer;
 import java.net.Socket;
 import javax.swing.*;
 
-public class MultClient extends javax.swing.JFrame implements ActionListener, KeyListener{
+public class MultClient extends javax.swing.JFrame implements ActionListener, KeyListener {
 
     private static final long serialVersionUID = 1L;
     private JTextArea texto;
@@ -27,15 +27,15 @@ public class MultClient extends javax.swing.JFrame implements ActionListener, Ke
     private JLabel lblMsg;
     private JPanel pnlContent;
     private Socket socket;
-    private OutputStream ou ;
+    private OutputStream ou;
     private Writer ouw;
     private BufferedWriter bfw;
     private JTextField txtIP;
     private JTextField txtPort;
     private JTextField txtName;
 
-    // a
-    public MultClient() throws IOException{
+    // metodo construtor, construção da interface
+    public MultClient() throws IOException {
         JLabel lblMessage = new JLabel("Servidor");
         txtIP = new JTextField("127.0.0.1");
         txtPort = new JTextField("36654");
@@ -43,7 +43,7 @@ public class MultClient extends javax.swing.JFrame implements ActionListener, Ke
         Object[] texts = {lblMessage, txtIP, txtPort, txtName};
         JOptionPane.showMessageDialog(null, texts);
         pnlContent = new JPanel();
-        texto = new JTextArea(20,40);
+        texto = new JTextArea(20, 40);
         texto.setEditable(false);
         texto.setBackground(Color.white);
         txtMsg = new JTextField(40);
@@ -64,96 +64,91 @@ public class MultClient extends javax.swing.JFrame implements ActionListener, Ke
         pnlContent.add(btnSair);
         pnlContent.add(btnSend);
         pnlContent.setBackground(Color.cyan);
-        texto.setBorder(BorderFactory.createEtchedBorder(Color.GREEN,Color.GREEN));
+        texto.setBorder(BorderFactory.createEtchedBorder(Color.GREEN, Color.GREEN));
         txtMsg.setBorder(BorderFactory.createEtchedBorder(Color.GREEN, Color.GREEN));
         setTitle("Chat");
         setContentPane(pnlContent);
         setLocationRelativeTo(null);
         setResizable(false);
-        setSize(470,470);
+        setSize(470, 470);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    //a
-    public void conectar() throws IOException{
+    // metodo de conexao com o servidor, instanciando socket e stream para comunicacao
+    public void connect() throws IOException {
 
-        socket = new Socket(txtIP.getText(),Integer.parseInt(txtPort.getText()));
+        socket = new Socket(txtIP.getText(), Integer.parseInt(txtPort.getText()));
         ou = socket.getOutputStream();
         ouw = new OutputStreamWriter(ou);
         bfw = new BufferedWriter(ouw);
-        bfw.write(txtName.getText()+"\r\n");
+        bfw.write(txtName.getText() + "\r\n");
         bfw.flush();
     }
 
-    //a
-    public void enviarMensagem(String msg) throws IOException{
+    // metodo para envio de mensagem, será usado no botão da interface
+    public void sendMessage(String msg) throws IOException {
 
-        if(msg.equals("Sair")){
+        if (msg.equals("Sair")) {
             bfw.write("Desconectado \r\n");
             texto.append("Desconectado \r\n");
-        }else{
-            bfw.write(msg+"\r\n");
-            texto.append( txtName.getText() + ": " + txtMsg.getText()+"\r\n");
+        } else {
+            bfw.write(msg + "\r\n");
+            texto.append(txtName.getText() + ": " + txtMsg.getText() + "\r\n");
         }
         bfw.flush();
         txtMsg.setText("");
     }
 
-    //a
-    public void escutar() throws IOException{
+    // metodo listener para disparar a mensagem recebida a todos
+    public void listen() throws IOException {
 
         InputStream in = socket.getInputStream();
         InputStreamReader inr = new InputStreamReader(in);
         BufferedReader bfr = new BufferedReader(inr);
         String msg = "";
 
-        while(!"Sair".equalsIgnoreCase(msg))
+        while (!"Sair".equalsIgnoreCase(msg))
 
-            if(bfr.ready()){
+            if (bfr.ready()) {
                 msg = bfr.readLine();
-                if(msg.equals("Sair"))
-                    texto.append("Servidor caiu! \r\n");
-                else
-                    texto.append(msg+"\r\n");
+                if (msg.equals("Sair")) texto.append("Servidor caiu! \r\n");
+                else texto.append(msg + "\r\n");
             }
     }
 
-    //a
-    public void sair() throws IOException{
+    // metodo para fechar as streams, também vai ser usado no botao de fechar a interface
+    public void exit() throws IOException {
 
-        enviarMensagem("Sair");
+        sendMessage("Sair");
         bfw.close();
         ouw.close();
         ou.close();
         socket.close();
     }
 
-    //a
+    // metodo para utilizacao dos botoes
     @Override
     public void actionPerformed(ActionEvent e) {
 
         try {
-            if(e.getActionCommand().equals(btnSend.getActionCommand()))
-                enviarMensagem(txtMsg.getText());
-            else
-            if(e.getActionCommand().equals(btnSair.getActionCommand()))
-                sair();
+            if (e.getActionCommand().equals(btnSend.getActionCommand())) sendMessage(txtMsg.getText());
+            else if (e.getActionCommand().equals(btnSair.getActionCommand())) exit();
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
+
             e1.printStackTrace();
         }
     }
 
-    //a
+    // se o keycode for enter, vai enviar a mensagem ao servidor
     @Override
     public void keyPressed(KeyEvent e) {
 
-        if(e.getKeyCode() == KeyEvent.VK_ENTER){
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             try {
-                enviarMensagem(txtMsg.getText());
+                sendMessage(txtMsg.getText());
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
+
                 e1.printStackTrace();
             }
         }
@@ -161,22 +156,21 @@ public class MultClient extends javax.swing.JFrame implements ActionListener, Ke
 
     @Override
     public void keyReleased(KeyEvent arg0) {
-        // TODO Auto-generated method stub
+
     }
 
     @Override
     public void keyTyped(KeyEvent arg0) {
-        // TODO Auto-generated method stub
+
     }
 
-    //a
-    public static void main(String []args) throws IOException{
+    //metodo main
+    public static void main(String[] args) throws IOException {
 
         MultClient app = new MultClient();
-        app.conectar();
-        app.escutar();
+        app.connect();
+        app.listen();
     }
-
 
 
 }
