@@ -75,7 +75,7 @@ public class MultThreadServer extends Thread {
         }
     }
 
-    // classe main
+
     public static void main(String []args) {
 
         try{
